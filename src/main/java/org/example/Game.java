@@ -129,18 +129,11 @@ public class Game extends JPanel {
     }
 
     private void update() {
-        while (!inputs.isEmpty()) {
-            Input current = inputs.remove(inputs.size() - 1);
-            if (current == Input.LEFT)
-                moveHorizontal(-1);
-            else if (current == Input.RIGHT)
-                moveHorizontal(1);
-            else if (current == Input.UP)
-                moveVertical(-1);
-            else if (current == Input.DOWN)
-                moveVertical(1);
-        }
+        handleInputs();
+        updateMap();
+    }
 
+    private void updateMap() {
         for (int y = map.length - 1; y >= 0; y--) {
             for (int x = 0; x < map[y].length; x++) {
                 if ((map[y][x] == Tile.STONE || map[y][x] == Tile.FALLING_STONE)
@@ -160,10 +153,32 @@ public class Game extends JPanel {
         }
     }
 
+    private void handleInputs() {
+        while (!inputs.isEmpty()) {
+            Input current = inputs.remove(inputs.size() - 1);
+            handleInput(current);
+        }
+    }
+
+    private void handleInput(Input current) {
+        if (current == Input.LEFT)
+            moveHorizontal(-1);
+        else if (current == Input.RIGHT)
+            moveHorizontal(1);
+        else if (current == Input.UP)
+            moveVertical(-1);
+        else if (current == Input.DOWN)
+            moveVertical(1);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        draw(g);
+    }
+
+    private void draw(Graphics g) {
         // Draw map
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
