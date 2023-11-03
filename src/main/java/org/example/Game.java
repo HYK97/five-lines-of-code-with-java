@@ -69,14 +69,15 @@ public class Game extends JPanel {
     }
 
     private void handleKeyPress(int keyCode) {
-        if (keyCode == KeyEvent.VK_LEFT)
+        if (keyCode == KeyEvent.VK_LEFT) {
             inputs.add(Input.LEFT);
-        else if (keyCode == KeyEvent.VK_RIGHT)
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
             inputs.add(Input.RIGHT);
-        else if (keyCode == KeyEvent.VK_UP)
+        } else if (keyCode == KeyEvent.VK_UP) {
             inputs.add(Input.UP);
-        else if (keyCode == KeyEvent.VK_DOWN)
+        } else if (keyCode == KeyEvent.VK_DOWN) {
             inputs.add(Input.DOWN);
+        }
     }
 
     private void remove(Tile tile) {
@@ -136,20 +137,24 @@ public class Game extends JPanel {
     private void updateMap() {
         for (int y = map.length - 1; y >= 0; y--) {
             for (int x = 0; x < map[y].length; x++) {
-                if ((map[y][x] == Tile.STONE || map[y][x] == Tile.FALLING_STONE)
-                        && map[y + 1][x] == Tile.AIR) {
-                    map[y + 1][x] = Tile.FALLING_STONE;
-                    map[y][x] = Tile.AIR;
-                } else if ((map[y][x] == Tile.BOX || map[y][x] == Tile.FALLING_BOX)
-                        && map[y + 1][x] == Tile.AIR) {
-                    map[y + 1][x] = Tile.FALLING_BOX;
-                    map[y][x] = Tile.AIR;
-                } else if (map[y][x] == Tile.FALLING_STONE) {
-                    map[y][x] = Tile.STONE;
-                } else if (map[y][x] == Tile.FALLING_BOX) {
-                    map[y][x] = Tile.BOX;
-                }
+                updateTitle(y, x);
             }
+        }
+    }
+
+    private void updateTitle(int y, int x) {
+        if ((map[y][x] == Tile.STONE || map[y][x] == Tile.FALLING_STONE)
+                && map[y + 1][x] == Tile.AIR) {
+            map[y + 1][x] = Tile.FALLING_STONE;
+            map[y][x] = Tile.AIR;
+        } else if ((map[y][x] == Tile.BOX || map[y][x] == Tile.FALLING_BOX)
+                && map[y + 1][x] == Tile.AIR) {
+            map[y + 1][x] = Tile.FALLING_BOX;
+            map[y][x] = Tile.AIR;
+        } else if (map[y][x] == Tile.FALLING_STONE) {
+            map[y][x] = Tile.STONE;
+        } else if (map[y][x] == Tile.FALLING_BOX) {
+            map[y][x] = Tile.BOX;
         }
     }
 
@@ -161,25 +166,40 @@ public class Game extends JPanel {
     }
 
     private void handleInput(Input current) {
-        if (current == Input.LEFT)
+        if (current == Input.LEFT) {
             moveHorizontal(-1);
-        else if (current == Input.RIGHT)
+        } else if (current == Input.RIGHT) {
             moveHorizontal(1);
-        else if (current == Input.UP)
+        } else if (current == Input.UP) {
             moveVertical(-1);
-        else if (current == Input.DOWN)
+        } else if (current == Input.DOWN) {
             moveVertical(1);
+        }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
 
         draw(g);
     }
 
     private void draw(Graphics g) {
+        //init paint
+        g.clearRect(0, 0, this.getWidth(), this.getHeight());
+
         // Draw map
+        drawMap(g);
+
+        // Draw player
+        drawPlayer(g);
+    }
+
+    private void drawPlayer(Graphics g) {
+        g.setColor(new Color(0xFF0000));
+        g.fillRect(playerX * TILE_SIZE, playerY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+    }
+
+    private void drawMap(Graphics g) {
         for (int y = 0; y < map.length; y++) {
             for (int x = 0; x < map[y].length; x++) {
                 if (map[y][x] == Tile.FLUX)
@@ -199,10 +219,6 @@ public class Game extends JPanel {
                     g.fillRect(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
             }
         }
-
-        // Draw player
-        g.setColor(new Color(0xFF0000));
-        g.fillRect(playerX * TILE_SIZE, playerY * TILE_SIZE, TILE_SIZE, TILE_SIZE);
     }
 
     public static void main(String[] args) {
